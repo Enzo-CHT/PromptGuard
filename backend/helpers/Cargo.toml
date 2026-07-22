@@ -1,0 +1,12 @@
+[package]
+name = "helpers"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+config = {path = "../config"}
+getset = "0.1.7"
+derive_builder = "0.20"
+rusty-tesseract = "1.1"
+image = "0.25"
+imageproc = "0.27"

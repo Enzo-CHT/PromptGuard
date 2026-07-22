@@ -1,0 +1,12 @@
+[package]
+name = "d2c"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+helpers = { path = "../helpers"}
+axum = "0.8.9"
+tokio = { version = "1.53.1", features = ["full"] }
+tower = "0.5.3"
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"] }

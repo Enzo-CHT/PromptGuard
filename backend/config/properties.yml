@@ -1,0 +1,3 @@
+resources:
+  tests:
+    assets: tests/resources/
