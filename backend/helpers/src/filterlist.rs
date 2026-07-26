@@ -1,8 +1,9 @@
 use getset::{Getters, Setters};
+use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 
-#[derive(Getters, Setters)]
-struct FilterList {
+#[derive(Debug, Getters, Setters, Clone, Default, Deserialize, Serialize)]
+pub struct FilterList {
     #[getset(get = "pub", set = "pub")]
     allowlist: HashSet<String>,
     #[getset(get = "pub", set = "pub")]

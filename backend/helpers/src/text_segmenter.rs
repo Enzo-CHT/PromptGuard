@@ -1,15 +1,15 @@
 use std::{collections::HashMap, error::Error};
 
 use crate::text_fragment::{TextFragment, TextFragmentBuilder, TextFragmentBuilderError};
-use config::AppConfig;
 
 use getset::{Getters, Setters};
-use image::{GrayImage, open};
+use image::open;
 use imageproc::contrast::{ThresholdType, threshold};
-use rusty_tesseract::{Args, Image, TessError, image_to_data};
+use rusty_tesseract::{Args, Image, image_to_data};
+use serde::{Deserialize, Serialize};
 
-#[derive(Getters, Setters)]
-struct TextSegmenter {
+#[derive(Debug, Getters, Setters, Clone, Deserialize, Serialize)]
+pub struct TextSegmenter {
     #[getset(get = "pub")]
     text: String,
 
@@ -40,8 +40,8 @@ impl TextSegmenter {
             fragments.push(
                 TextFragmentBuilder::default()
                     .fragment(text)
-                    .size((entry.width, entry.height))
-                    .position((entry.left, entry.top))
+                    .size((entry.width as u32, entry.height as u32))
+                    .position((entry.left as u32, entry.top as u32))
                     .build()?,
             );
         }
@@ -68,7 +68,7 @@ impl TextSegmenter {
             fragments.push(
                 TextFragmentBuilder::default()
                     .fragment(token)
-                    .position((start_index as i32, end_index as i32))
+                    .position((start_index as u32, end_index as u32))
                     .build()?,
             );
 

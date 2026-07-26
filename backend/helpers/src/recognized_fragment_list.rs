@@ -3,12 +3,9 @@ use derive_builder::Builder;
 use getset::{Getters, Setters};
 
 #[derive(Getters, Setters, Builder, Default, Debug)]
-struct RecognizedFragmentList {
+pub struct RecognizedFragmentList {
     #[getset(get = "pub", set = "pub")]
     list: Vec<TextFragment>,
-
-    #[getset(get = "pub")]
-    category: String,
 }
 
 impl RecognizedFragmentList {
@@ -20,7 +17,7 @@ impl RecognizedFragmentList {
             .join(" ")
     }
 
-    pub fn position(&self) -> Option<(i32, i32)> {
+    pub fn position(&self) -> Option<(u32, u32)> {
         if self.list.is_empty() {
             return None;
         }
@@ -49,18 +46,17 @@ mod tests {
             .build()
             .unwrap();
 
-        let mut recognized_fragement_list = RecognizedFragmentListBuilder::default()
+        let mut recognized_fragment_list = RecognizedFragmentListBuilder::default()
             .list(vec![fragment.clone()])
-            .category(String::from("TEST"))
             .build()
             .unwrap();
 
-        assert_eq!(recognized_fragement_list.text(), "Hello");
-        assert_eq!(recognized_fragement_list.position(), Some((0, 5)));
+        assert_eq!(recognized_fragment_list.text(), "Hello");
+        assert_eq!(recognized_fragment_list.position(), Some((0, 5)));
 
-        recognized_fragement_list.set_list(vec![fragment, another_fragment]);
+        recognized_fragment_list.set_list(vec![fragment, another_fragment]);
 
-        assert_eq!(recognized_fragement_list.text(), "Hello World");
-        assert_eq!(recognized_fragement_list.position(), Some((0, 11)));
+        assert_eq!(recognized_fragment_list.text(), "Hello World");
+        assert_eq!(recognized_fragment_list.position(), Some((0, 11)));
     }
 }
