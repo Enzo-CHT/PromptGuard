@@ -4,3 +4,14 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+getset = "0.1.7"
+derive_builder = "0.20"
+async-trait = "0.1.91"
+sled = "0.34.7"
+model = { version = "0.1.0", path = "../model" }
+anyhow = "1.0.104"
+json = "0.12.4"
+serde_json = "1.0.151"
+tracing = "0.1.44"
+tokio = { version = "1.53.1", features = ["full"] }
+tempfile = "3.27.0"

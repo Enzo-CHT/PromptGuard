@@ -14,3 +14,4 @@ tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"] }
 getset = "0.1.7"
 derive_builder = "0.20"
 anyhow = "1.0.104"
+repository = { version = "0.1.0", path = "../repository" }

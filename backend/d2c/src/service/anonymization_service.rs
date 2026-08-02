@@ -4,9 +4,12 @@ use derive_builder::Builder;
 use getset::{Getters, Setters};
 use helpers::recognized_fragment_list::RecognizedFragmentList;
 use helpers::text_fragment::{TextFragment, TextFragmentBuilder};
+use repository::sled_mask_repository::SledMaskRepository;
 
-#[derive(Debug, Default, Getters, Setters, Builder)]
-pub struct AnonymizationService {}
+#[derive(Debug, Getters, Setters, Builder)]
+pub struct AnonymizationService {
+    sled_repository: SledMaskRepository,
+}
 
 impl AnonymizationService {
     pub fn mask_text(
