@@ -699,6 +699,7 @@ dependencies = [
  "anyhow",
  "axum",
  "helpers",
+ "http-body-util",
  "model",
  "rust-bert",
  "serde",

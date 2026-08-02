@@ -15,14 +15,15 @@ async fn main() -> anyhow::Result<()> {
             .await??,
     ));
 
-    // run our app with hyper, listening globally on port 3000
     let listener = tokio::net::TcpListener::bind("127.0.0.1:9990")
         .await
         .unwrap();
+
     event!(
         Level::INFO,
         "Le serveur est disponible à l'adresse : http://localhost:9990"
     );
+
     axum::serve(
         listener,
         controller::routes::drs_routes().with_state(service),

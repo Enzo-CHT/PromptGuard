@@ -60,6 +60,5 @@ mod tests {
         for label in output.list() {
             println!("{} - {}", label.fragment(), label.category());
         }
-        assert!(false)
     }
 }

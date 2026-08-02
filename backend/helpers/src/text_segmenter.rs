@@ -8,7 +8,7 @@ use imageproc::contrast::{ThresholdType, threshold};
 use rusty_tesseract::{Args, Image, image_to_data};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Getters, Setters, Clone, Deserialize, Serialize)]
+#[derive(Debug, Getters, Setters, Clone, Deserialize, Serialize, Default)]
 pub struct TextSegmenter {
     #[getset(get = "pub")]
     text: String,

@@ -1,8 +1,9 @@
 use crate::text_fragment::TextFragment;
 use derive_builder::Builder;
 use getset::{Getters, Setters};
+use serde::{Deserialize, Serialize};
 
-#[derive(Getters, Setters, Builder, Default, Debug)]
+#[derive(Getters, Setters, Builder, Default, Debug, Deserialize, Serialize)]
 pub struct RecognizedFragmentList {
     #[getset(get = "pub", set = "pub")]
     list: Vec<TextFragment>,
