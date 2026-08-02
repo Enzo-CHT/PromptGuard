@@ -568,7 +568,10 @@ dependencies = [
 name = "d2c"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "axum",
+ "derive_builder",
+ "getset",
  "helpers",
  "model",
  "tokio",

@@ -1,1 +1,1 @@
-pub mod text_service;
+pub mod anonymization_service;

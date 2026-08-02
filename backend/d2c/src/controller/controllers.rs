@@ -1,9 +1,9 @@
-use crate::service::text_service::TextService;
+use axum::{Json, http::StatusCode};
 
-pub async fn get_foo() -> String {
-    String::from("Foo")
+pub async fn is_alive() -> StatusCode {
+    StatusCode::OK
 }
 
-pub async fn manage_text() -> String {
+pub async fn handle_text() -> String {
     String::from("ManageText")
 }
