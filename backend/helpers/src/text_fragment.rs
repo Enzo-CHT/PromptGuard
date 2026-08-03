@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 #[builder(setter(into))]
 pub struct TextFragment {
     #[getset(get = "pub")]
-    fragment: String,
+    text: String,
 
     #[getset(get = "pub")]
     position: (u32, u32),

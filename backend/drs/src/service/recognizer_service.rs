@@ -31,7 +31,7 @@ impl RecognizerService {
             }
 
             let fragment = TextFragmentBuilder::default()
-                .fragment(entity.word.clone())
+                .text(entity.word.clone())
                 .category(entity.label.clone())
                 .position((entity.offset.begin, entity.offset.end))
                 .build()?;
@@ -58,7 +58,7 @@ mod tests {
 
         let output = service.analyze(segmenter, 0.1).unwrap();
         for label in output.list() {
-            println!("{} - {}", label.fragment(), label.category());
+            println!("{} - {}", label.text(), label.category());
         }
     }
 }

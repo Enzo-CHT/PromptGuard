@@ -585,11 +585,15 @@ dependencies = [
  "getset",
  "helpers",
  "model",
+ "regex",
  "repository",
+ "sled",
+ "tempfile",
  "tokio",
  "tower",
  "tracing",
  "tracing-subscriber",
+ "uuid",
 ]
 
 [[package]]
@@ -1682,11 +1686,13 @@ dependencies = [
 name = "model"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "axum",
  "derive_builder",
  "getset",
  "helpers",
  "serde",
+ "uuid",
 ]
 
 [[package]]

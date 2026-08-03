@@ -1,18 +1,22 @@
-use std::ops::Range;
-
 use derive_builder::Builder;
 use getset::{Getters, Setters};
 use helpers::recognized_fragment_list::RecognizedFragmentList;
 use helpers::text_fragment::{TextFragment, TextFragmentBuilder};
-use repository::sled_mask_repository::SledMaskRepository;
+use repository::mask_repository_trait::MaskRepositoryTrait;
 
-#[derive(Debug, Getters, Setters, Builder)]
-pub struct AnonymizationService {
-    sled_repository: SledMaskRepository,
+use crate::service::mask_service::{self, MaskService};
+
+#[derive(Debug)]
+pub struct AnonymizationService<R: MaskRepositoryTrait> {
+    mask_service: MaskService<R>,
 }
 
-impl AnonymizationService {
-    pub fn mask_text(
+impl<R: MaskRepositoryTrait> AnonymizationService<R> {
+    pub fn new(mask_service: MaskService<R>) -> Self {
+        Self { mask_service }
+    }
+
+    pub async fn mask_text(
         &self,
         text: String,
         recognized_fragment_list: RecognizedFragmentList,
@@ -26,16 +30,19 @@ impl AnonymizationService {
             let end = end as isize;
             let fragment_length = end - start;
 
-            let mask = "[MASK]"; // TODO: ajouter la création de masque 
-            let mask_length = mask.len() as isize;
+            let mask = self
+                .mask_service
+                .get_or_save(user_id.clone(), fragment)
+                .await?;
+            let mask_length = mask.mask().len() as isize;
 
             let new_pos = (start - offset, end - offset);
-            modified_text.replace_range(new_pos.0 as usize..new_pos.1 as usize, mask.into());
+            modified_text.replace_range(new_pos.0 as usize..new_pos.1 as usize, mask.mask());
             offset += fragment_length - mask_length;
         }
 
         let text_fragment = TextFragmentBuilder::default()
-            .fragment(modified_text.as_str())
+            .text(modified_text.as_str())
             .position((0, modified_text.len() as u32))
             .build()?;
 
@@ -53,21 +60,30 @@ mod tests {
     use std::println;
 
     use helpers::recognized_fragment_list::RecognizedFragmentListBuilder;
+    use regex::Regex;
+    use repository::sled_mask_repository::SledMaskRepository;
+
+    use crate::service::mask_service::MaskService;
 
     use super::*;
 
-    #[test]
-    fn mask_test() {
-        let service = AnonymizationServiceBuilder::default().build().unwrap();
+    #[tokio::test]
+    async fn mask_test() {
+        let temp_dir = tempfile::tempdir().unwrap();
+        let service = AnonymizationService::new(MaskService::new(SledMaskRepository::new(
+            sled::open(temp_dir.path().to_str().unwrap()).unwrap(),
+        )));
 
         let frag1 = TextFragmentBuilder::default()
-            .fragment("Henry")
+            .text("Henry")
             .position((12, 16))
+            .category("TEST")
             .build()
             .unwrap();
         let frag2 = TextFragmentBuilder::default()
-            .fragment("Cavill")
+            .text("Cavill")
             .position((18, 23))
+            .category("TEST")
             .build()
             .unwrap();
         let recognized_fragment_list = RecognizedFragmentListBuilder::default()
@@ -81,13 +97,18 @@ mod tests {
                 recognized_fragment_list,
                 "00000000000".into(),
             )
+            .await
             .unwrap();
 
         println!("{:?}", result_frag);
 
-        assert_eq!(
-            result_frag.fragment(),
-            &"Je m'appel [MASK] [MASK]".to_string()
+        let pattern =
+            Regex::new(r"^Je m'appel \[TEST [0-9a-fA-F-]{5}\] \[TEST [0-9a-fA-F-]{5}\]$").unwrap();
+
+        assert!(
+            pattern.is_match(result_frag.text()),
+            "Format inattendu : {}",
+            result_frag.text()
         );
     }
 }

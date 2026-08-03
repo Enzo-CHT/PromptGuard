@@ -9,3 +9,5 @@ getset = "0.1.7"
 derive_builder = "0.20"
 axum = "0.8.9"
 serde = "1.0.229"
+anyhow = "1.0.104"
+uuid = {version = "1.24.0", features = ["v4"] }

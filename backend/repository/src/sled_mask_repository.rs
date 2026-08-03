@@ -1,30 +1,38 @@
+use std::vec;
+
 use crate::mask_repository_trait::MaskRepositoryTrait;
 use derive_builder::Builder;
 use getset::Getters;
 use model::mask::Mask;
 use sled::Db;
 
-#[derive(Debug, Builder, Getters, Clone)]
+#[derive(Debug, Clone)]
 pub struct SledMaskRepository {
-    #[getset(get = "pub")]
     db: Db,
 }
 
 #[async_trait::async_trait]
 impl MaskRepositoryTrait for SledMaskRepository {
-    async fn create(&self, mask: Mask) -> anyhow::Result<()> {
-        let value = serde_json::to_vec(&mask)?;
-        self.db.insert(mask.id().as_bytes(), value)?;
+    async fn create(&self, id: String, mask: Mask) -> anyhow::Result<()> {
+        let value = serde_json::to_vec(&vec![mask])?;
+        self.db.insert(id.as_bytes(), value)?;
         Ok(())
     }
-    async fn find_by_id(&self, id: String) -> anyhow::Result<Option<Mask>> {
+
+    async fn find_by_id(&self, id: String) -> anyhow::Result<Option<Vec<Mask>>> {
         match self.db.get(id.as_bytes())? {
             Some(bytes) => {
-                let mask: Mask = serde_json::from_slice(&bytes)?;
+                let mask: Vec<Mask> = serde_json::from_slice(&bytes)?;
                 Ok(Some(mask))
             }
             None => Ok(None),
         }
+    }
+}
+
+impl SledMaskRepository {
+    pub fn new(db: Db) -> Self {
+        Self { db }
     }
 }
 
@@ -35,7 +43,7 @@ mod tests {
     use model::mask::MaskBuilder;
 
     use crate::mask_repository_trait::MaskRepositoryTrait;
-    use crate::sled_mask_repository::SledMaskRepositoryBuilder;
+    use crate::sled_mask_repository::SledMaskRepository;
 
     #[tokio::test]
     async fn create_mask() {
@@ -43,16 +51,14 @@ mod tests {
         let mask = MaskBuilder::default()
             .mask("[TEST]".into())
             .id("1".into())
-            .text("Hello".into())
+            .text(Some(String::from("Hello")))
             .build()
             .unwrap();
 
-        let repository = SledMaskRepositoryBuilder::default()
-            .db(sled::open(temp_dir.path().to_str().unwrap()).unwrap())
-            .build()
-            .unwrap();
+        let repository =
+            SledMaskRepository::new(sled::open(temp_dir.path().to_str().unwrap()).unwrap());
 
-        assert!(repository.create(mask).await.is_ok());
+        assert!(repository.create(String::from("1"), mask).await.is_ok());
     }
 
     #[tokio::test]
@@ -61,21 +67,19 @@ mod tests {
         let mask = MaskBuilder::default()
             .mask("[TEST]".into())
             .id("1".into())
-            .text("Hello".into())
+            .text(Some(String::from("Hello")))
             .build()
             .unwrap();
 
-        let repository = SledMaskRepositoryBuilder::default()
-            .db(sled::open(temp_dir.path().to_str().unwrap()).unwrap())
-            .build()
-            .unwrap();
+        let repository =
+            SledMaskRepository::new(sled::open(temp_dir.path().to_str().unwrap()).unwrap());
 
-        assert!(repository.create(mask).await.is_ok());
+        assert!(repository.create(String::from("1"), mask).await.is_ok());
 
         let mask_option = repository.find_by_id(String::from("1")).await.unwrap();
         assert!(mask_option.is_some());
-        let mask = mask_option.unwrap();
-        assert_eq!(mask.mask(), "[TEST]");
-        assert_eq!(mask.text(), "Hello");
+        let masks = mask_option.unwrap();
+        assert_eq!(masks[0].mask(), "[TEST]");
+        assert_eq!(*masks[0].text(), Some(String::from("Hello")));
     }
 }

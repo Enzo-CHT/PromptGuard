@@ -13,7 +13,7 @@ impl RecognizedFragmentList {
     pub fn text(&self) -> String {
         self.list
             .iter()
-            .map(|entry| entry.fragment().to_string())
+            .map(|entry| entry.text().to_string())
             .collect::<Vec<_>>()
             .join(" ")
     }
@@ -37,12 +37,12 @@ mod tests {
     #[test]
     fn test_get_full_text() {
         let fragment = TextFragmentBuilder::default()
-            .fragment("Hello")
+            .text("Hello")
             .position((0, 5))
             .build()
             .unwrap();
         let another_fragment = TextFragmentBuilder::default()
-            .fragment("World")
+            .text("World")
             .position((6, 11))
             .build()
             .unwrap();

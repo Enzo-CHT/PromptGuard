@@ -15,3 +15,7 @@ getset = "0.1.7"
 derive_builder = "0.20"
 anyhow = "1.0.104"
 repository = { version = "0.1.0", path = "../repository" }
+uuid = "1.24.0"
+tempfile = "3.27.0"
+sled = "0.34.7"
+regex = "1.13.1"

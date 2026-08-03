@@ -39,7 +39,7 @@ impl TextSegmenter {
 
             fragments.push(
                 TextFragmentBuilder::default()
-                    .fragment(text)
+                    .text(text)
                     .size((entry.width as u32, entry.height as u32))
                     .position((entry.left as u32, entry.top as u32))
                     .build()?,
@@ -67,7 +67,7 @@ impl TextSegmenter {
             end_index = start_index + token.len();
             fragments.push(
                 TextFragmentBuilder::default()
-                    .fragment(token)
+                    .text(token)
                     .position((start_index as u32, end_index as u32))
                     .build()?,
             );
@@ -109,19 +109,19 @@ mod tests {
         assert_eq!(segmenter.text(), &string_hello_world);
 
         let hello = TextFragmentBuilder::default()
-            .fragment("Hello")
+            .text("Hello")
             .position((0, 5))
             .build()
             .unwrap();
         let world = TextFragmentBuilder::default()
-            .fragment("World")
+            .text("World")
             .position((6, 11))
             .build()
             .unwrap();
 
         // Vérification des données
-        assert_eq!(segmenter.fragments()[0].fragment(), &String::from("Hello"));
-        assert_eq!(segmenter.fragments()[1].fragment(), &String::from("World"));
+        assert_eq!(segmenter.fragments()[0].text(), &String::from("Hello"));
+        assert_eq!(segmenter.fragments()[1].text(), &String::from("World"));
 
         // Vérification des positions
         let hello_pos = segmenter.fragments()[0].position();
@@ -175,7 +175,7 @@ mod tests {
             assert!(
                 String::from("Noisy image to test Tesseract OCR")
                     .split(" ")
-                    .any(|w| w == fragment.fragment())
+                    .any(|w| w == fragment.text())
             )
         }
     }
