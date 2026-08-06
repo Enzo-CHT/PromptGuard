@@ -1,10 +1,18 @@
-use crate::controller::controllers::{handle_text, is_alive};
+use std::sync::Arc;
+
+use crate::{
+    controller::{
+        app_state::AppState,
+        controllers::{handle_text, is_alive},
+    },
+    service::anonymization_service::AnonymizationService,
+};
 use axum::{
     Router,
     routing::{get, post},
 };
 
-pub fn app_routes() -> Router {
+pub fn app_routes() -> Router<AppState> {
     Router::new()
         .route("/d2c/", get(root))
         .route("/d2c/isalive", get(is_alive))

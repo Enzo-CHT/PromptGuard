@@ -1,18 +1,14 @@
-use derive_builder::Builder;
-use getset::{Getters, Setters};
 use helpers::recognized_fragment_list::RecognizedFragmentList;
 use helpers::text_fragment::{TextFragment, TextFragmentBuilder};
-use repository::mask_repository_trait::MaskRepositoryTrait;
 
-use crate::service::mask_service::{self, MaskService};
+use crate::service::mask_service::MaskService;
 
-#[derive(Debug)]
-pub struct AnonymizationService<R: MaskRepositoryTrait> {
-    mask_service: MaskService<R>,
+pub struct AnonymizationService {
+    mask_service: MaskService,
 }
 
-impl<R: MaskRepositoryTrait> AnonymizationService<R> {
-    pub fn new(mask_service: MaskService<R>) -> Self {
+impl AnonymizationService {
+    pub fn new(mask_service: MaskService) -> Self {
         Self { mask_service }
     }
 
@@ -62,6 +58,7 @@ mod tests {
     use helpers::recognized_fragment_list::RecognizedFragmentListBuilder;
     use regex::Regex;
     use repository::sled_mask_repository::SledMaskRepository;
+    use std::sync::Arc;
 
     use crate::service::mask_service::MaskService;
 
@@ -70,9 +67,9 @@ mod tests {
     #[tokio::test]
     async fn mask_test() {
         let temp_dir = tempfile::tempdir().unwrap();
-        let service = AnonymizationService::new(MaskService::new(SledMaskRepository::new(
-            sled::open(temp_dir.path().to_str().unwrap()).unwrap(),
-        )));
+        let sled_repo =
+            SledMaskRepository::new(sled::open(temp_dir.path().to_str().unwrap()).unwrap());
+        let service = AnonymizationService::new(MaskService::new(Arc::new(sled_repo)));
 
         let frag1 = TextFragmentBuilder::default()
             .text("Henry")

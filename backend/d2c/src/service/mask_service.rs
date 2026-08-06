@@ -1,14 +1,14 @@
 use helpers::text_fragment::TextFragment;
 use model::mask::Mask;
 use repository::mask_repository_trait::MaskRepositoryTrait;
+use std::sync::Arc;
 
-#[derive(Debug, Clone)]
-pub struct MaskService<R: MaskRepositoryTrait> {
-    mask_repository: R,
+pub struct MaskService {
+    mask_repository: Arc<dyn MaskRepositoryTrait + Sync + Send>,
 }
 
-impl<R: MaskRepositoryTrait> MaskService<R> {
-    pub fn new(mask_repository: R) -> Self {
+impl MaskService {
+    pub fn new(mask_repository: Arc<dyn MaskRepositoryTrait + Sync + Send>) -> Self {
         Self { mask_repository }
     }
 
@@ -54,6 +54,8 @@ impl<R: MaskRepositoryTrait> MaskService<R> {
 #[cfg(test)]
 
 mod tests {
+    use std::sync::Arc;
+
     use helpers::text_fragment::TextFragmentBuilder;
     use repository::sled_mask_repository::SledMaskRepository;
 
@@ -61,9 +63,10 @@ mod tests {
     #[tokio::test]
     async fn save() {
         let temp_dir = tempfile::tempdir().unwrap();
-        let service = MaskService::new(SledMaskRepository::new(
-            sled::open(temp_dir.path().to_str().unwrap()).unwrap(),
-        ));
+        let sled_repo =
+            SledMaskRepository::new(sled::open(temp_dir.path().to_str().unwrap()).unwrap());
+
+        let service = MaskService::new(Arc::new(sled_repo));
 
         let fragment = TextFragmentBuilder::default()
             .text("Hello")
@@ -80,9 +83,9 @@ mod tests {
     async fn get() {
         let user_id = "123".to_string();
         let temp_dir = tempfile::tempdir().unwrap();
-        let service = MaskService::new(SledMaskRepository::new(
-            sled::open(temp_dir.path().to_str().unwrap()).unwrap(),
-        ));
+        let sled_repo =
+            SledMaskRepository::new(sled::open(temp_dir.path().to_str().unwrap()).unwrap());
+        let service = MaskService::new(Arc::new(sled_repo));
 
         let fragment = TextFragmentBuilder::default()
             .text("Hello")

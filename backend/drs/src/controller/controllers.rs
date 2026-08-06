@@ -3,7 +3,7 @@ use std::sync::{Arc, Mutex};
 use crate::service::recognizer_service::RecognizerService;
 use axum::{Json, extract::State, http::StatusCode};
 use helpers::recognized_fragment_list::RecognizedFragmentList;
-use model::dto::ars::recognized_fragment_dto::RecognizedFragmentRequest;
+use model::dto::drs::recognized_fragment_dto::RecognizedFragmentRequest;
 
 pub async fn analyze(
     State(service): State<Arc<Mutex<RecognizerService>>>,
@@ -38,7 +38,7 @@ mod tests {
     };
     use helpers::text_segmenter::TextSegmenter;
     use http_body_util::BodyExt;
-    use model::dto::ars::recognized_fragment_dto::RecognizedFragmentRequestBuilder;
+    use model::dto::drs::recognized_fragment_dto::RecognizedFragmentRequestBuilder;
     use serde_json::json;
     use tower::ServiceExt; // pour .oneshot() // pour .collect() sur le body de réponse
 

@@ -6,7 +6,8 @@ edition = "2024"
 [dependencies]
 helpers = { path = "../helpers"}
 model = { version = "0.1.0", path = "../model" }
-axum = "0.8.9"
+axum = { version = "0.8.9", features = ["macros"] }
+http-body-util = "0.1"
 tokio = { version = "1.53.1", features = ["full"] }
 tower = "0.5.3"
 tracing = "0.1.44"
@@ -19,3 +20,7 @@ uuid = "1.24.0"
 tempfile = "3.27.0"
 sled = "0.34.7"
 regex = "1.13.1"
+config = { version = "0.1.0", path = "../config" }
+async-trait = "0.1.91"
+serde_json = "1.0.151"
+reqwest = { version = "0.13.4", features = ["json"] }

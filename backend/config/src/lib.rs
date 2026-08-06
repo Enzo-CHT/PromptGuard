@@ -10,11 +10,16 @@ pub struct AppConfig {
 #[derive(Debug, Deserialize, Clone)]
 pub struct ResourcesConfig {
     pub tests: TestResourcesConfig,
+    pub db: DbResourcesConfig,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct TestResourcesConfig {
     pub assets: String,
+}
+#[derive(Debug, Deserialize, Clone)]
+pub struct DbResourcesConfig {
+    pub base: String,
 }
 
 #[derive(Debug)]
