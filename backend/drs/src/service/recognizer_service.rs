@@ -1,7 +1,7 @@
 use std::error::Error;
 
 use anyhow;
-use helpers::recognized_fragment_list::{RecognizedFragmentList, RecognizedFragmentListBuilder};
+use helpers::recognized_fragment_list::RecognizedFragmentList;
 use helpers::text_fragment::{TextFragment, TextFragmentBuilder};
 use helpers::text_segmenter::TextSegmenter;
 use rust_bert::pipelines::ner::NERModel;
@@ -31,17 +31,15 @@ impl RecognizerService {
             }
 
             let fragment = TextFragmentBuilder::default()
-                .text(entity.word.clone())
+                .text(entity.word.trim().to_string().clone())
                 .category(entity.label.clone())
-                .position((entity.offset.begin, entity.offset.end))
+                .position((entity.offset.begin + 1, entity.offset.end))
                 .build()?;
 
             list.push(fragment);
         }
 
-        Ok(RecognizedFragmentListBuilder::default()
-            .list(list)
-            .build()?)
+        Ok(RecognizedFragmentList::new(list))
     }
 }
 
@@ -51,14 +49,15 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test() {
+    fn test_analyze() {
         let segmenter =
             TextSegmenter::from_text(String::from("Bonjour, je m'appelle Théodore")).unwrap();
         let service = RecognizerService::new().unwrap();
 
         let output = service.analyze(segmenter, 0.1).unwrap();
-        for label in output.list() {
-            println!("{} - {}", label.text(), label.category());
-        }
+
+        assert_eq!(output.list()[0].text(), "Théodore");
+        assert_eq!(output.list()[0].category(), "I-PER");
+        assert_eq!(output.list()[0].position(), &(23,30));
     }
 }
