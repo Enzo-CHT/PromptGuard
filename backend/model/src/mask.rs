@@ -35,7 +35,6 @@ impl fmt::Display for Mask {
 }
 
 impl Mask {
-
     /// Extrait l'identifiant contenu dans une chaîne de caractère représentant un masque.
     pub fn get_id_from_mask(mask: String) -> anyhow::Result<String> {
         let mask_length = mask.chars().count();
@@ -68,7 +67,7 @@ impl Mask {
 
 #[cfg(test)]
 mod tests {
-    use std::assert_eq;
+    use std::{assert_eq, format};
 
     use helpers::text_fragment::TextFragmentBuilder;
 
@@ -98,5 +97,15 @@ mod tests {
 
         assert!(!mask.id().is_empty());
         assert_eq!(*mask.text(), Some(String::from("Hello")));
+    }
+
+    #[test]
+    fn test_displau() {
+        let mask = Mask {
+            id: "123".into(),
+            text: None,
+            mask: "[TEST 123]".into(),
+        };
+        assert_eq!(format!("{mask}"), "[TEST 123]");
     }
 }
