@@ -18,6 +18,8 @@ pub struct TextSegmenter {
 }
 
 impl TextSegmenter {
+    /// Créer un segment de text à partir du chemin pointant vers une image.
+    /// L'image est importée et traitée via Tesseract OCR pour en extraire le text.
     pub fn from_image(path: &str) -> Result<TextSegmenter, Box<dyn Error>> {
         let img = Image::from_path(path)?;
         let args = Args {
@@ -40,22 +42,22 @@ impl TextSegmenter {
             fragments.push(
                 TextFragmentBuilder::default()
                     .text(text)
-                    .size((entry.width as u32, entry.height as u32))
-                    .position((entry.left as u32, entry.top as u32))
+                    .position((entry.width as u32, entry.height as u32))
                     .build()?,
             );
         }
 
-        return Ok(TextSegmenter {
+        
+        Ok(TextSegmenter {
             text: data
                 .data
                 .iter()
-                .map(|entry| entry.text.trim().to_owned())
-                .filter(|s| !s.is_empty())
+                .map(|entry| entry.text.trim().to_owned()) // Supprime les espaces en trop
+                .filter(|s| !s.is_empty()) // Supprime les éléments vides
                 .collect::<Vec<_>>()
                 .join(" "),
             fragments: fragments,
-        });
+        })
     }
 
     pub fn from_text(text: String) -> Result<TextSegmenter, TextFragmentBuilderError> {
@@ -82,6 +84,7 @@ impl TextSegmenter {
         });
     }
 
+    /// Applique un ensemble de préprocessus pour augmenter la qualité de détection du text dans l'image. 
     fn preprocess_image(path: &str, save_path: &str) -> Result<(), image::ImageError> {
         let img = open(path)?;
         let gray = img.to_luma8();
