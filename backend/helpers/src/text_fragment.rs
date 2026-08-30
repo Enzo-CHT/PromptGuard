@@ -15,7 +15,4 @@ pub struct TextFragment {
     #[builder(default)]
     category: String,
 
-    #[getset(get = "pub")]
-    #[builder(default)]
-    size: (u32, u32),
 }
