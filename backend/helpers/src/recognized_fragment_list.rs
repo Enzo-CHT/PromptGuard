@@ -1,15 +1,18 @@
 use crate::text_fragment::TextFragment;
-use derive_builder::Builder;
 use getset::{Getters, Setters};
 use serde::{Deserialize, Serialize};
 
-#[derive(Getters, Setters, Builder, Default, Debug, Deserialize, Serialize)]
+#[derive(Getters, Setters, Default, Debug, Deserialize, Serialize)]
 pub struct RecognizedFragmentList {
     #[getset(get = "pub", set = "pub")]
     list: Vec<TextFragment>,
 }
 
 impl RecognizedFragmentList {
+    pub fn new(list: Vec<TextFragment>) -> RecognizedFragmentList {
+        Self { list }
+    }
+
     pub fn text(&self) -> String {
         self.list
             .iter()
@@ -47,10 +50,7 @@ mod tests {
             .build()
             .unwrap();
 
-        let mut recognized_fragment_list = RecognizedFragmentListBuilder::default()
-            .list(vec![fragment.clone()])
-            .build()
-            .unwrap();
+        let mut recognized_fragment_list = RecognizedFragmentList::new(vec![fragment.clone()]);
 
         assert_eq!(recognized_fragment_list.text(), "Hello");
         assert_eq!(recognized_fragment_list.position(), Some((0, 5)));
