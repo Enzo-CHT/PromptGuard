@@ -27,7 +27,7 @@ impl MaskService {
     }
 
     pub async fn save(&self, user_id: String, fragment: &TextFragment) -> anyhow::Result<Mask> {
-        let new_mask = Mask::from_text(&fragment)?;
+        let new_mask = Mask::from_fragment(&fragment)?;
         self.mask_repository
             .create(user_id, new_mask.clone())
             .await?;

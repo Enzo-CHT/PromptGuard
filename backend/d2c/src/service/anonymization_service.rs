@@ -55,7 +55,6 @@ mod tests {
 
     use std::println;
 
-    use helpers::recognized_fragment_list::RecognizedFragmentListBuilder;
     use regex::Regex;
     use repository::sled_mask_repository::SledMaskRepository;
     use std::sync::Arc;
@@ -83,10 +82,7 @@ mod tests {
             .category("TEST")
             .build()
             .unwrap();
-        let recognized_fragment_list = RecognizedFragmentListBuilder::default()
-            .list(vec![frag1, frag2])
-            .build()
-            .unwrap();
+        let recognized_fragment_list = RecognizedFragmentList::new(vec![frag1, frag2]);
 
         let result_frag: TextFragment = service
             .mask_text(
