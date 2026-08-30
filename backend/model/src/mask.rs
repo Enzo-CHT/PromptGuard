@@ -19,13 +19,13 @@ use uuid::Uuid;
 ///
 pub struct Mask {
     #[getset(get = "pub")]
-    id: String,
+    pub id: String,
 
     #[getset(get = "pub")]
-    text: Option<String>,
+    pub text: Option<String>,
 
     #[getset(get = "pub")]
-    mask: String,
+    pub mask: String,
 }
 
 impl fmt::Display for Mask {

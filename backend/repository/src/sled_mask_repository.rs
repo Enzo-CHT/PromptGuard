@@ -38,7 +38,7 @@ impl SledMaskRepository {
 mod tests {
     use std::assert_eq;
 
-    use model::mask::MaskBuilder;
+    use model::mask::Mask;
 
     use crate::mask_repository_trait::MaskRepositoryTrait;
     use crate::sled_mask_repository::SledMaskRepository;
@@ -46,12 +46,11 @@ mod tests {
     #[tokio::test]
     async fn create_mask() {
         let temp_dir = tempfile::tempdir().unwrap();
-        let mask = MaskBuilder::default()
-            .mask("[TEST]".into())
-            .id("1".into())
-            .text(Some(String::from("Hello")))
-            .build()
-            .unwrap();
+        let mask = Mask {
+            id: "1".into(),
+            text: Some(String::from("Hello")),
+            mask: "[TEST]".into(),
+        };
 
         let repository =
             SledMaskRepository::new(sled::open(temp_dir.path().to_str().unwrap()).unwrap());
@@ -62,12 +61,11 @@ mod tests {
     #[tokio::test]
     async fn find_by_id() {
         let temp_dir = tempfile::tempdir().unwrap();
-        let mask = MaskBuilder::default()
-            .mask("[TEST]".into())
-            .id("1".into())
-            .text(Some(String::from("Hello")))
-            .build()
-            .unwrap();
+        let mask = Mask {
+            id: "1".into(),
+            text: Some(String::from("Hello")),
+            mask: "[TEST]".into(),
+        };
 
         let repository =
             SledMaskRepository::new(sled::open(temp_dir.path().to_str().unwrap()).unwrap());
