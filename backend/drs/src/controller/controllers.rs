@@ -16,7 +16,7 @@ pub async fn analyze(
     })
     .await
     .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("{e}")))?
-    .map_err(|e| (StatusCode::NOT_FOUND, "Entites not found ".to_string()))?;
+    .map_err(|_| (StatusCode::NOT_FOUND, "Entites not found ".to_string()))?;
 
     Ok(Json(fragment_list_result))
 }
@@ -27,7 +27,7 @@ pub async fn is_alive() -> StatusCode {
 
 #[cfg(test)]
 mod tests {
-    use std::{assert_eq, println};
+    use std::assert_eq;
 
     use super::*;
     use axum::{

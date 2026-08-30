@@ -3,9 +3,7 @@ use crate::service::{
 };
 use config::AppConfig;
 use controller::app_state::AppState;
-use repository::{
-    mask_repository_trait::MaskRepositoryTrait, sled_mask_repository::SledMaskRepository,
-};
+use repository::sled_mask_repository::SledMaskRepository;
 use std::sync::Arc;
 use tracing::{Level, event, instrument};
 use tracing_subscriber::fmt;

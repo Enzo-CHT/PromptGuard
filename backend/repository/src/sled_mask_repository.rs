@@ -1,8 +1,6 @@
 use std::vec;
 
 use crate::mask_repository_trait::MaskRepositoryTrait;
-use derive_builder::Builder;
-use getset::Getters;
 use model::mask::Mask;
 use sled::Db;
 

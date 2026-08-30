@@ -62,7 +62,7 @@ impl TextSegmenter {
 
     pub fn from_text(text: String) -> Result<TextSegmenter, TextFragmentBuilderError> {
         let mut start_index: usize = 0;
-        let mut end_index: usize = 0;
+        let mut end_index: usize;
         let mut fragments: Vec<TextFragment> = vec![];
 
         for token in text.trim().split(" ") {

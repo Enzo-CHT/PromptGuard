@@ -1,11 +1,6 @@
-use std::sync::Arc;
-
-use crate::{
-    controller::{
-        app_state::AppState,
-        controllers::{handle_text, is_alive},
-    },
-    service::anonymization_service::AnonymizationService,
+use crate::controller::{
+    app_state::AppState,
+    controllers::{handle_text, is_alive},
 };
 use axum::{
     Router,

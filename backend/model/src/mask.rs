@@ -1,5 +1,5 @@
 use core::fmt;
-use std::{format, println};
+use std::format;
 
 use getset::Getters;
 use helpers::text_fragment::TextFragment;
